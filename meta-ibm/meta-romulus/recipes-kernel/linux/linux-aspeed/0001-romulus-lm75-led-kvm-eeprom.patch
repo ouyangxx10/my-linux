@@ -1,5 +1,5 @@
 diff --git a/arch/arm/boot/dts/aspeed-bmc-opp-romulus.dts b/arch/arm/boot/dts/aspeed-bmc-opp-romulus.dts
-index 1b521e0..e0bec10 100644
+index 1b521e0..8540876 100644
 --- a/arch/arm/boot/dts/aspeed-bmc-opp-romulus.dts
 +++ b/arch/arm/boot/dts/aspeed-bmc-opp-romulus.dts
 @@ -2,6 +2,7 @@
@@ -108,9 +108,9 @@ index 1b521e0..e0bec10 100644
 +		pagesize = <32>;
 +	};
 +
-+	pca0: pca9505@40 {
++	pca0: pca9505@20 {
 +		compatible = "nxp,pca9505";
-+		reg = <0x40>;
++		reg = <0x20>;
 +		#address-cells = <1>;
 +		#size-cells = <0>;
 +
