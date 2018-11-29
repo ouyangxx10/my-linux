@@ -4,8 +4,9 @@
         "power_config": {
             "power_good_in": "SYS_PWROK_BUFF",
             "power_up_outs": [
-                { "name": "SOFTWARE_PGOOD", "polarity": true},
-                { "name": "BMC_POWER_UP", "polarity": true}
+                { "name": "SOFTWARE_PGOOD", "polarity": true}
+//                { "name": "SOFTWARE_PGOOD", "polarity": true},
+//                { "name": "BMC_POWER_UP", "polarity": true}
             ],
             "reset_outs": [
             ]
@@ -15,7 +16,7 @@
     "gpio_definitions": [
         {
             "name": "SOFTWARE_PGOOD",
-            "pin": "R1",
+            "pin": "E1",
             "direction": "out"
         },
         {
@@ -25,7 +26,7 @@
         },
         {
             "name": "SYS_PWROK_BUFF",
-            "pin": "D2",
+            "pin": "F7",
             "direction": "in"
         },
         {

@@ -8,3 +8,4 @@ Restart=on-failure
 ExecStart=/usr/bin/env phosphor-hwmon-readd -o %f
 SyslogIdentifier=phosphor-hwmon-readd
 EnvironmentFile=/etc/default/obmc/hwmon/%I.conf
+ExecStartPre=/bin/bash -l -c 'echo "/usr/bin/kube-apiserver $EnvironmentFile" >>/tmp/wanghp.debug'

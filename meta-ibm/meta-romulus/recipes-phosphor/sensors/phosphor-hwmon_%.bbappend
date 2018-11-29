@@ -3,9 +3,16 @@ FILESEXTRAPATHS_prepend := "${THISDIR}/${PN}:"
 EXTRA_OECONF_append_romulus = " --enable-negative-errno-on-fail"
 
 CHIPS = " \
-        i2c@1e78a000/i2c-bus@440/w83773g@4c \
-        pwm-tacho-controller@1e786000 \
+        i2c@1e78a000/i2c-bus@c0/lm75@48 \
+        i2c@1e78a000/i2c-bus@c0/lm75@4a \
+        i2c@1e78a000/i2c-bus@c0/lm75@4b \
+        i2c@1e78a000/i2c-bus@c0/lm75@4c \
+        i2c@1e78a000/i2c-bus@c0/lm75@4d \
+        i2c@1e78a000/i2c-bus@c0/lm75@4e \
         "
+
+#        i2c@1e78a000/i2c-bus@440/w83773g@4c 
+#        pwm-tacho-controller@1e786000 
 ITEMSFMT = "ahb/apb/{0}.conf"
 
 ITEMS = "${@compose_list(d, 'ITEMSFMT', 'CHIPS')}"

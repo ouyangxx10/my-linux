@@ -18,5 +18,11 @@ then
 fi
 
 path="${path//:/--}"
+#path="${path//-/\\x2d}"
+#path="${path//:/\\x3a}"
 
+/bin/bash -l -c `echo "action=" "$action" >> /tmp/wanghp.debug`
+/bin/bash -l -c `echo "devpath=" "$devpath" >> /tmp/wanghp.debug`
+/bin/bash -l -c `echo "of_fullname=" "$of_fullname" >> /tmp/wanghp.debug`
+/bin/bash -l -c `echo "path=" "$path" >> /tmp/wanghp.debug`
 systemctl $action 'xyz.openbmc_project.Hwmon@'$path'.service'
