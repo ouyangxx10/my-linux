@@ -1,3 +1,5 @@
 FILESEXTRAPATHS_prepend_romulus := "${THISDIR}/${PN}:"
 SRC_URI += "file://romulus.cfg"
 SRC_URI += "file://0001-romulus-lm75-led-kvm-eeprom.patch"
+SRC_URI += "file://0002-edd-kvm-01.patch"
+SRC_URI += "file://0003-edd-kvm-02.patch"
