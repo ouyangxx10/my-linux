@@ -1,0 +1,216 @@
+diff --git a/arch/arm/boot/dts/aspeed-bmc-opp-romulus.dts b/arch/arm/boot/dts/aspeed-bmc-opp-romulus.dts
+index 1b521e0..e0bec10 100644
+--- a/arch/arm/boot/dts/aspeed-bmc-opp-romulus.dts
++++ b/arch/arm/boot/dts/aspeed-bmc-opp-romulus.dts
+@@ -2,6 +2,7 @@
+ /dts-v1/;
+ #include "aspeed-g5.dtsi"
+ #include <dt-bindings/gpio/aspeed-gpio.h>
++#include <dt-bindings/leds/leds-pca955x.h>
+ 
+ / {
+ 	model = "Romulus BMC";
+@@ -37,7 +38,7 @@
+ 		};
+ 
+ 		gfx_memory: framebuffer {
+-			size = <0x01000000>;
++			size = <0x04000000>;
+ 			alignment = <0x01000000>;
+ 			compatible = "shared-dma-pool";
+ 			reusable;
+@@ -48,7 +49,7 @@
+ 		compatible = "gpio-leds";
+ 
+ 		fault {
+-			gpios = <&gpio ASPEED_GPIO(N, 2) GPIO_ACTIVE_LOW>;
++			gpios = <&gpio ASPEED_GPIO(L, 5) GPIO_ACTIVE_LOW>;
+ 		};
+ 
+ 		identify {
+@@ -97,6 +98,12 @@
+ 		compatible = "iio-hwmon";
+ 		io-channels = <&adc 12>;
+ 	};
++/*	iio-hwmon {
++		compatible = "iio-hwmon";
++                io-channels = <&adc 0>, <&adc 1>, <&adc 3>,
++			<&adc 4>, <&adc 5>, <&adc 6>, <&adc 11>,
++			<&adc 12>, <&adc 13>, <&adc 14>, <&adc 15>;
++        };*/
+ };
+ 
+ &fmc {
+@@ -133,9 +140,10 @@
+        status = "okay";
+ };
+ 
+-&uart1 {
++
++/*&uart1 { */
+ 	/* Rear RS-232 connector */
+-	status = "okay";
++/*	status = "okay";
+ 
+ 	pinctrl-names = "default";
+ 	pinctrl-0 = <&pinctrl_txd1_default
+@@ -147,7 +155,7 @@
+ 			&pinctrl_ndcd1_default
+ 			&pinctrl_nri1_default>;
+ };
+-
++*/
+ &uart5 {
+ 	status = "okay";
+ };
+@@ -167,10 +175,77 @@
+ 
+ &i2c2 {
+ 	status = "okay";
++
++	lm75@4a {
++		compatible = "national,lm75";
++		reg = <0x4a>;
++	};
++
++	lm75@48 {
++		compatible = "national,lm75";
++		reg = <0x48>;
++	};
++
++	lm75@4b {
++		compatible = "national,lm75";
++		reg = <0x4b>;
++	};
++
++	lm75@4c {
++		compatible = "national,lm75";
++		reg = <0x4c>;
++	};
++
++	lm75@4d {
++		compatible = "national,lm75";
++		reg = <0x4d>;
++	};
++
++	lm75@4e {
++		compatible = "national,lm75";
++		reg = <0x4e>;
++	};
++
+ };
+ 
+ &i2c3 {
+ 	status = "okay";
++	eeprom@50 {
++		compatible = "atmel,24c32";
++		reg = <0x50>;
++		pagesize = <32>;
++	};
++
++	pca0: pca9505@40 {
++		compatible = "nxp,pca9505";
++		reg = <0x40>;
++		#address-cells = <1>;
++		#size-cells = <0>;
++
++		gpio-controller;
++		#gpio-cells = <2>;
++
++		gpio@0 {
++			reg = <0>;
++			type = <PCA955X_TYPE_GPIO>;
++		};
++
++		gpio@1 {
++			reg = <1>;
++			type = <PCA955X_TYPE_GPIO>;
++                };
++
++                gpio@2 {
++                        reg = <2>;
++                        type = <PCA955X_TYPE_GPIO>;
++                };
++
++                gpio@3 {
++                        reg = <3>;
++                        type = <PCA955X_TYPE_GPIO>;
++                };
++
++	};
+ };
+ 
+ &i2c4 {
+@@ -309,6 +384,11 @@
+      memory-region = <&gfx_memory>;
+ };
+ 
++&video {
++	status = "okay";
++	memory-region = <&gfx_memory>;
++};
++
+ &vhub {
+ 	status = "okay";
+ };
+diff --git a/drivers/gpio/Makefile b/drivers/gpio/Makefile
+index 1324c8f..37ea01a 100644
+--- a/drivers/gpio/Makefile
++++ b/drivers/gpio/Makefile
+@@ -93,7 +93,7 @@ obj-$(CONFIG_GPIO_MXC)		+= gpio-mxc.o
+ obj-$(CONFIG_GPIO_MXS)		+= gpio-mxs.o
+ obj-$(CONFIG_GPIO_OCTEON)	+= gpio-octeon.o
+ obj-$(CONFIG_GPIO_OMAP)		+= gpio-omap.o
+-obj-$(CONFIG_GPIO_PCA953X)	+= gpio-pca953x.o
++obj-y	+= gpio-pca953x.o
+ obj-$(CONFIG_GPIO_PCF857X)	+= gpio-pcf857x.o
+ obj-$(CONFIG_GPIO_PCH)		+= gpio-pch.o
+ obj-$(CONFIG_GPIO_PCI_IDIO_16)	+= gpio-pci-idio-16.o
+diff --git a/drivers/leds/Makefile b/drivers/leds/Makefile
+index 420b5d2..f7c1e9f 100644
+--- a/drivers/leds/Makefile
++++ b/drivers/leds/Makefile
+@@ -28,7 +28,8 @@ obj-$(CONFIG_LEDS_COBALT_RAQ)		+= leds-cobalt-raq.o
+ obj-$(CONFIG_LEDS_SUNFIRE)		+= leds-sunfire.o
+ obj-$(CONFIG_LEDS_PCA9532)		+= leds-pca9532.o
+ obj-$(CONFIG_LEDS_GPIO_REGISTER)	+= leds-gpio-register.o
+-obj-$(CONFIG_LEDS_GPIO)			+= leds-gpio.o
++#obj-$(CONFIG_LEDS_GPIO)			+= leds-gpio.o
++obj-y			+= leds-gpio.o
+ obj-$(CONFIG_LEDS_LP3944)		+= leds-lp3944.o
+ obj-$(CONFIG_LEDS_LP3952)		+= leds-lp3952.o
+ obj-$(CONFIG_LEDS_LP55XX_COMMON)	+= leds-lp55xx-common.o
+diff --git a/drivers/leds/leds-gpio.c b/drivers/leds/leds-gpio.c
+index 764c313..2f3edd7 100644
+--- a/drivers/leds/leds-gpio.c
++++ b/drivers/leds/leds-gpio.c
+@@ -236,7 +236,7 @@ static int gpio_led_probe(struct platform_device *pdev)
+ 	struct gpio_led_platform_data *pdata = dev_get_platdata(&pdev->dev);
+ 	struct gpio_leds_priv *priv;
+ 	int i, ret = 0;
+-
++	printk("------------------wanghp:leds-gpio.c----------------\n");
+ 	if (pdata && pdata->num_leds) {
+ 		priv = devm_kzalloc(&pdev->dev,
+ 				sizeof_gpio_leds_priv(pdata->num_leds),
+@@ -259,7 +259,7 @@ static int gpio_led_probe(struct platform_device *pdev)
+ 	}
+ 
+ 	platform_set_drvdata(pdev, priv);
+-
++	printk("------------------wanghp:leds-gpio.c---end-------------\n");
+ 	return 0;
+ }
+ 
+diff --git a/drivers/leds/leds-pca955x.c b/drivers/leds/leds-pca955x.c
+index f51b356..2abf017 100644
+--- a/drivers/leds/leds-pca955x.c
++++ b/drivers/leds/leds-pca955x.c
+@@ -469,6 +469,7 @@ static int pca955x_probe(struct i2c_client *client,
+ 	}
+ 
+ 	/* Make sure the slave address / chip type combo given is possible */
++	printk("----------wanghp-pca955x:chip->slv_addr_shift=%02xh \n",chip->slv_addr_shift);
+ 	if ((client->addr & ~((1 << chip->slv_addr_shift) - 1)) !=
+ 	    chip->slv_addr) {
+ 		dev_err(&client->dev, "invalid slave address %02x\n",
